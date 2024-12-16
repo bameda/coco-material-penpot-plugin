@@ -1,0 +1,11 @@
+{
+  "name": "Coco Material Penpot plugin",
+  "description": "The oficial Penpot plugin for Coco Material (https://cocomaterial.com)",
+  "code": "/plugin.js",
+  "icon": "/icon.png",
+  "permissions": [
+    "page:read",
+    "content:write",
+    "file:read",
+    "selection:read"]
+}
