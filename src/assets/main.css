@@ -1,1 +1,13 @@
 @import './base.css';
+
+
+/* Style devel mode */
+/********************/
+
+body {
+  background: var(--db-primary);
+  color: var(--df-primary);
+  max-width: 335px;
+  max-height: 590px;
+  margin: 0;
+}
