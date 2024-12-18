@@ -45,17 +45,17 @@ async function fetchGET(url: string): Promise<T> {
 
 export default {
   // Tags
-  getTags: async (tags: string) => await fetchGET<CocoTag>(
+  getTags: async () => await fetchGET<CocoTag>(
     `https://cocomaterial.com/api/tags/`
   ),
   // Vectors
-  getLatestCocoImages: async () => await fetchGET<CocoImageList>(
-    "https://cocomaterial.com/api/vectors/?page=1&page_size=39&ordering=-uploaded"
+  getLatestCocoImages: async (params: {page: int}) => await fetchGET<CocoImageList>(
+    `https://cocomaterial.com/api/vectors/?page=${params.page}&page_size=39&ordering=-uploaded`
   ),
-  getCocoImagesByTags: async (tags: string) => await fetchGET<CocoImageList>(
-    `https://cocomaterial.com/api/vectors/?page=1&page_size=39&tags=${tags}`
+  getCocoImagesByTags: async (params: {tags: string, page: int}) => await fetchGET<CocoImageList>(
+    `https://cocomaterial.com/api/vectors/?page=${params.page}&page_size=39&tags=${params.tags}`
   ),
-  getCocoImagesBySimilarity: async (similarity: string) => await fetchGET<CocoImageList>(
-    `https://cocomaterial.com/api/vectors/?page=1&page_size=39&similarity=${similarity}`
+  getCocoImagesBySimilarity: async (params: {similarity: string, page: int}) => await fetchGET<CocoImageList>(
+    `https://cocomaterial.com/api/vectors/?page=${params.page}&page_size=39&similarity=${params.similarity}`
   ),
 };
