@@ -5,9 +5,20 @@
 /********************/
 
 body {
-  background: var(--db-primary);
-  color: var(--df-primary);
-  max-width: 335px;
-  max-height: 590px;
-  margin: 0;
+  max-width: 326px;
+  max-height: 715px;
+}
+
+[data-theme="dark"] {
+  body {
+    background: var(--db-primary);
+    color: var(--df-primary);
+  }
+}
+
+[data-theme="light"] {
+  body {
+    background: var(--lb-primary);
+    color: var(--lf-primary);
+  }
 }

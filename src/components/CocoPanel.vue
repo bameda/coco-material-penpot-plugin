@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineModel } from "vue";
-import api, {CocoImage} from "../services/api.ts";
+import api from "../services/api";
+import type { CocoImage } from "../services/api/model";
 
 let currentCall = api.getLatestCocoImages
 
@@ -16,6 +17,9 @@ onMounted(async () => {
   hasMorePages.value = data.next !== null;
 });
 
+/*
+ * DDraw functions
+ */
 function getImageAsStyleBackgroundAttr(cocoImage: CocoImage) {
   if (cocoImage.gif !== null || cocoImage.coloredGif !== null) {
     const gifUrl = cocoImage.coloredGif || cocoImage.gif;
@@ -32,7 +36,11 @@ function getImageAsStyleBackgroundAttr(cocoImage: CocoImage) {
   }
 }
 
+/*
+* Handle functions
+*/
 async function handleClickOnSearchButton () {
+  if (!text.value) return;
   currentCall = api.getCocoImagesByTags;
   currentPage.value = 1;
   const data = await currentCall({
@@ -67,42 +75,53 @@ function handleClickOnCocoImageButton(cocoImage: CocoImage) {
     }, "*");
   }
 }
-
 </script>
 
 <template>
 <div class="host">
   <form class="search-form"
     v-on:submit.prevent="handleClickOnSearchButton()">
-    <!-- <label for="search-text">Show images about</label> -->
-    <input class="search-text"
-      type="text" name="search-text"
-      placeholder="type some tag or text here..."
-      v-model="text"/>
-    <button class="search-button"
-      type="submit">
+    <div class="form-group">
+      <label class="input-label-hidden" for="search-text">Show images about</label>
+      <input class="input"
+        type="text" name="search-text" id="search-text"
+        placeholder="type something here..."
+        v-model="text" />
+    </div>
+    <button type="submit" data-appearance="primary">
       Search
     </button>
   </form>
 
-  <div class="result-list"
-    v-if="results">
-    <button class="item"
-      v-for="item in results"
-      :key="item.id"
-      v-on:click="handleClickOnCocoImageButton(item)">
-      <div class="coco-image"
-        :alt="item.name"
-        :style="getImageAsStyleBackgroundAttr(item)"></div>
-    </button>
-  </div>
-  <div class="show-more"
-    v-if="hasMorePages">
-    <button
-      class="show-more-button"
-      v-on:click="handleClickOnShowMoreButton()">
-      show more results
-    </button>
+  <div class="result-container">
+    <div class="result-list"
+      v-if="results">
+      <button class="item"
+        v-for="item in results"
+        :key="item.id"
+        :title="'Name: ' + item.name + '\nTags: ' + item.tags"
+        v-on:click="handleClickOnCocoImageButton(item)">
+        <div class="coco-image"
+          :alt="item.name"
+          :style="getImageAsStyleBackgroundAttr(item)"></div>
+      </button>
+    </div>
+
+    <div class="show-more"
+      v-if="hasMorePages">
+      <button
+        type="button" data-appearance="secondary"
+        v-on:click="handleClickOnShowMoreButton()">
+        show more results
+      </button>
+    </div>
+
+    <div class="no-results"
+      v-if="results.length === 0 && text">
+        <p class="body-m">
+          There is nothing for your search.<br />Try something else.
+        </p>
+    </div>
   </div>
 </div>
 </template>
@@ -118,75 +137,81 @@ function handleClickOnCocoImageButton(cocoImage: CocoImage) {
 .search-form {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
-  background: var(--db-primary);
-  padding: 1rem;
-
+  justify-content: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-20) var(--spacing-12);
   position: sticky;
   top: 0;
   left: 0;
+}
 
-  & .search-text {
-    flex-grow: 2;
-    padding: 0.3rem 0.5rem;
+.result-container {
+  overflow-y: scroll;
+  max-height: 640px;
+
+  & .result-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-8);
+
+    & .item {
+      border: 2px solid var(--app-white);
+      border-radius: 0.5rem;
+      width: 5rem;
+      height: 5rem;
+      padding: 0.1rem;
+      background: var(--app-white);
+
+      & .coco-image {
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+        margin: auto;
+      }
+    }
   }
 
-  & .search-button {
-    padding: 0.3rem 0.5rem;
+  & .show-more {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin: var(--spacing-12) 0;
+  }
+
+  & .no-results {
+    text-align: center;
+    margin: var(--spacing-12) 0;
   }
 }
 
-.result-list {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  overflow: scroll;
+
+[data-theme="dark"] {
+  &.search-form {
+    background: var(--db-primary);
+  }
 
   & .item {
-    border: 1px solid white;
-    border-radius: 0.5rem;
-    width: 5rem;
-    height: 5rem;
-    padding: 0.1rem;
-    background: white;
-
-    & .coco-image {
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
-      height: 100%;
-      width: 100%;
-      margin: auto;
-
-      /* TODO: Maybe I can delete this piece of code
-      * &.vertical {
-      *   height: 125px;
-      *
-      *   @media (max-width: 1200px) {
-      *     height: 100px;
-      *   }
-      * }
-      *
-      * &.horizontal {
-      *   width: 125px;
-      *
-      *   @media (max-width: 1200px) {
-      *     width: 100px;
-      *   }
-      * }
-      */
+    &:hover {
+      border-color: var(--da-tertiary);
     }
   }
 }
 
-.show-more {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: center;
-  padding: 0.5rem;
+[data-theme="light"] {
+  &.search-form {
+    background: var(--lb-primary);
+  }
+
+  & .item {
+    &:hover {
+      border-color: var(--la-tertiary);
+    }
+  }
 }
 
 </style>

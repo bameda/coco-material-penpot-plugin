@@ -1,17 +1,21 @@
-import type { ThemeMessage, RawMessage } from './model';
+import type { ThemeMessage, RawMessage, SvgMessage, GifMessage } from './model';
 
-penpot.ui.open('CocoMaterial', `?theme=${penpot.theme}`);
+penpot.ui.open('CocoMaterial', `?theme=${penpot.theme}`, {
+  width: 380,
+  height: 800}
+);
 
 penpot.on('themechange', (theme) => setTheme({ type: 'theme', content: theme }));
 
-function setTheme(message: ThemePluginEvent) {
+function setTheme(message: ThemeMessage) {
   penpot.ui.sendMessage(message);
 }
 
 penpot.ui.onMessage(async(rawMessage: RawMessage) => {
   switch (rawMessage.type) {
-    case "svg": addSvg(rawMessage); break;
-    case "gif": await addGif(rawMessage); break;
+    // FIX: Typing here, remove 'as' and use the correct type.
+    case "svg": addSvg(rawMessage as SvgMessage); break;
+    case "gif": await addGif(rawMessage as GifMessage); break;
   }
 });
 
@@ -30,7 +34,6 @@ function addSvg(message: SvgMessage) {
 }
 
 async function addGif(message: GifMessage) {
-  // TODO: Test me with a gif
   const imageData = await penpot.uploadMediaUrl(
     message.name,
     message.content

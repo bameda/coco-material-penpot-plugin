@@ -1,6 +1,6 @@
 {
   "name": "CocoMaterial",
-  "description": "The oficial Penpot plugin for CocoMaterial (https://cocomaterial.com)",
+  "description": "The official Penpot plugin for CocoMaterial (https://cocomaterial.com)",
   "code": "/plugin.js",
   "icon": "/icon.png",
   "permissions": [
