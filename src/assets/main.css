@@ -1,6 +1,5 @@
 @import './base.css';
 
-
 /* Style devel mode */
 /********************/
 
@@ -9,14 +8,14 @@ body {
   max-height: 715px;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   body {
     background: var(--db-primary);
     color: var(--df-primary);
   }
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
   body {
     background: var(--lb-primary);
     color: var(--lf-primary);

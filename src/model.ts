@@ -2,11 +2,10 @@
  * This file contains the typescript interfaces for the plugin events.
  */
 
-export interface RawMessagePluginEvent{
+export interface RawMessagePluginEvent {
   type: string
   contents?: string
-  [key: string]: any
-};
+}
 
 export interface ThemePluginEvent extends RawMessage {
   type: 'theme'
